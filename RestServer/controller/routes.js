@@ -64,6 +64,7 @@ exports.register=function(req,res,next)
 }
 }
 
+
 exports.login=function(req,res,next){
   var type=req.body.type;
   if(type=="patient")
