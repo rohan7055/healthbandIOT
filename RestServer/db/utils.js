@@ -68,7 +68,39 @@ var query="select * from patient where username=?";
 var queryArray=[username];
 pool.getConnection(function(err,connection)
 {
- connection.query(getQuery,queryArray,function(error,results,field)
+ connection.query(query,queryArray,function(error,results,field)
+{
+ connection.release();
+
+if(error)
+{
+  console.log(error);
+  callback(true,null)
+}
+else {
+      console.log(results);
+      if(results.length>0)
+      {
+        callback(false,results);
+      }
+      else {
+        callback(true,null);
+      }
+    }
+});
+
+})
+
+}
+
+getDoctor=function(username,callback)
+{
+
+var query="select * from doctor where username=?";
+var queryArray=[username];
+pool.getConnection(function(err,connection)
+{
+ connection.query(query,queryArray,function(error,results,field)
 {
  connection.release();
 
@@ -96,3 +128,4 @@ else {
 exports.insertpatient = insertpatient;
 exports.insertdoctor = insertdoctor;
 exports.getPatient=getPatient;
+exports.getDoctor=getDoctor;
