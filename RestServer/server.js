@@ -32,6 +32,8 @@ router.get("/email",EmailRoute.email)
 router.get("/emailnew",EmailRoute.emailnew)
 router.post("/register",LoginRoutes.register)
 router.post("/login",LoginRoutes.login)
+router.post("/getPatientInfo",LoginRoutes.getPatientInfo)
+router.post("/getDoctorInfo",LoginRoutes.getDoctorInfo)
 
 
 

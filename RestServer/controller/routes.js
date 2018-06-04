@@ -10,32 +10,47 @@ exports.register=function(req,res,next)
   var type=req.body.type;
   if(type=="patient")
   {
-    mysql.insertpatient(req.body.phone,req.body.email,req.body.fullname,req.body.address,req.body.alert_emails,req.body.alert_mobiles,
-    req.body.username,md5(req.body.password),function(err,result,data)
+    mysql.getDoctorByContact(req.body.doctor_contact,function(err,result)
   {
-   if(err)
-    {
-      console.log(err)
-      res.status(401).json({
-        status:false,
-        message:result
-      });
-    }
-    else{
-      res.status(201).json({
-        status:true,
-        message:result,
-        data:data
-      })
-    }
+    if(err)
+     {
+       console.log(err)
+       res.status(401).json({
+         status:false,
+         message:result
+       });
+     }
+     else {
+       mysql.insertpatient(req.body.phone,req.body.email,req.body.fullname,req.body.address,req.body.alert_emails,req.body.alert_mobiles,
+       req.body.username,md5(req.body.password),result[0].doctor_id,function(err,result,data)
+      {
+      if(err)
+       {
+         console.log(err)
+         res.status(401).json({
+           status:false,
+           message:result
+         });
+       }
+       else{
+         res.status(201).json({
+           status:true,
+           message:result,
+           data:data
+         })
+       }
+     });
+   }
+
   })
+
 
     //(phone,email,fullname,address,alert_emails,alert_mobiles,username,password)
 
   }else if(type=="doctor")
   {
     //name,username,password,phone,email,address
-    mysql.insertdoctor(req.body.name,req.body.username,req.body.password,req.body.phone,req.body.email,req.body.address,function(err,result,data)
+    mysql.insertdoctor(req.body.name,req.body.username,md5(req.body.password),req.body.phone,req.body.email,req.body.address,function(err,result,data)
   {
     if(err)
      {
@@ -172,4 +187,46 @@ exports.login=function(req,res,next){
       message:"Please Enter a valid type"
     })
   }
+}
+
+exports.getPatientInfo=function(req,res,next)
+{
+  mysql.getPatientInfo(req.body.username,function(err,result)
+  {
+    if(err)
+    {
+      console.log(err)
+      res.status(401).json({
+        status:false,
+        message:"Auth Failed Try Again"
+      });
+    }else {
+      res.status(200).json({
+        status:true,
+        message:"Successfully Retrieved",
+        data:result[0]
+      });
+    }
+  });
+}
+
+exports.getDoctorInfo=function(req,res,next)
+{
+  mysql.getDoctorInfo(req.body.username,function(err,result)
+  {
+    if(err)
+    {
+      console.log(err)
+      res.status(401).json({
+        status:false,
+        message:"Auth Failed Try Again"
+      });
+    }else {
+      res.status(200).json({
+        status:true,
+        message:"Successfully Retrieved",
+        data:result
+      });
+    }
+  });
 }
